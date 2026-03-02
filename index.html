@@ -3,76 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SFRestaurants | Professional Food Delivery</title>
+    <title>SFRestaurants | Final Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <style>
         :root { --primary: #ff4757; --dark: #0f172a; --glass: rgba(255,255,255,0.08); }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
         body { background: var(--dark); color: white; overflow-x: hidden; }
 
-        /* Navigation */
+        /* Navbar */
         nav { 
             display:flex; justify-content:space-between; align-items:center; 
-            padding: 15px 5%; background:rgba(15,23,42,0.98); 
+            padding: 15px 5%; background:#0f172a; 
             position:fixed; width:100%; top:0; z-index:1000; border-bottom: 1px solid var(--glass); 
         }
-        .logo { font-size:1.5rem; font-weight:700; color:var(--primary); cursor: pointer; text-transform: uppercase; }
+        .logo { font-size:1.5rem; font-weight:700; color:var(--primary); cursor: pointer; }
         .nav-links { display:flex; gap:20px; align-items:center; }
-        .nav-links a { color:white; text-decoration:none; font-size: 0.95rem; cursor:pointer; font-weight: 500; }
+        .nav-links a { color:white; text-decoration:none; font-size: 0.9rem; cursor:pointer; font-weight: 500; }
         .menu-icon { display: none; font-size: 1.5rem; color: white; }
 
-        /* Section Styling */
+        /* Sections */
         section { padding: 100px 5% 40px; display:none; min-height: 100vh; }
-        section.active { display:block; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
+        section.active { display:block; animation: fadeIn 0.4s ease-in; }
+        @keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
 
-        /* Auth Container */
-        .auth-card { 
-            width: 100%; max-width: 400px; margin: 40px auto; 
-            background: var(--glass); padding: 35px; border-radius: 25px; 
-            border: 1px solid rgba(255, 71, 87, 0.2); backdrop-filter: blur(15px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        /* Auth Cards & Forms */
+        .container { 
+            width: 100%; max-width: 420px; margin: 20px auto; 
+            background: var(--glass); padding: 35px; border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
         }
-        .auth-card h2 { text-align: center; margin-bottom: 25px; color: var(--primary); }
+        input, textarea { width: 100%; padding: 13px; margin: 10px 0; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 10px; font-size: 1rem; }
+        .btn { width:100%; padding:14px; border:none; border-radius:10px; cursor:pointer; font-weight:600; transition: 0.3s; margin-top: 10px; font-size: 1rem; }
+        .btn-primary { background: var(--primary); color:white; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5); }
 
-        input { 
-            width: 100%; padding: 14px; margin: 10px 0; 
-            background: #1e293b; border: 1px solid #334155; 
-            color: white; border-radius: 12px; font-size: 1rem; 
-        }
-        input:focus { border-color: var(--primary); outline: none; }
+        /* Menu Grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
+        .food-card { background: var(--glass); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .food-card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-body { padding: 20px; }
 
-        .btn { 
-            width:100%; padding:15px; border:none; border-radius:12px; 
-            cursor:pointer; font-weight:700; margin-top:15px; 
-            transition: 0.3s; font-size: 1rem; text-transform: uppercase;
-        }
-        .btn-primary { 
-            background: linear-gradient(45deg, #ff4757, #ff6b81); 
-            color:white; box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
-        }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 71, 87, 0.5); }
-
-        /* Menu Display */
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 30px; }
-        .product-card { background: var(--glass); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); text-align: center; transition: 0.3s; }
-        .product-card:hover { transform: scale(1.03); border-color: var(--primary); }
-        .product-card img { width: 100%; height: 200px; object-fit: cover; }
-        .product-info { padding: 20px; }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .nav-links { 
-                display: none; position: absolute; top: 65px; left: 0; 
-                width: 100%; background: #0f172a; flex-direction: column; 
-                padding: 30px; border-bottom: 2px solid var(--primary);
-            }
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; width: 100%; background: #0f172a; padding: 25px; border-bottom: 2px solid var(--primary); }
             .nav-links.show { display: flex; }
             .menu-icon { display: block; }
         }
 
-        footer { background: #000; padding: 30px; text-align: center; font-size: 0.9rem; border-top: 1px solid var(--glass); }
+        footer { background: #000; padding: 40px; text-align: center; border-top: 1px solid var(--glass); }
     </style>
 </head>
 <body>
@@ -83,66 +66,76 @@
     <div class="nav-links" id="navLinks">
         <a onclick="showPage('home')">Home</a>
         <a onclick="showPage('menu')">Menu</a>
-        <a id="adminBtn" onclick="showPage('admin')" style="display:none; color: #f1c40f;"><i class="fas fa-user-shield"></i> Admin</a>
-        <a id="loginBtn" onclick="showPage('login')" class="btn-primary" style="padding: 8px 20px; border-radius: 20px;">Login</a>
-        <a id="logoutBtn" onclick="logout()" style="display:none;">Logout</a>
+        <a onclick="showPage('contact')">Contact</a>
+        <a id="adminBtn" onclick="showPage('admin')" style="display:none; color:gold;">Admin Panel</a>
+        <a id="loginLink" onclick="showPage('login')" style="color:var(--primary); font-weight: bold;">Login</a>
+        <a id="logoutBtn" onclick="handleLogout()" style="display:none;">Logout</a>
     </div>
 </nav>
 
-<section id="home" class="active" style="text-align:center; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-    <h1 style="font-size: 3rem; margin-bottom: 10px;">SFRestaurants</h1>
-    <p style="opacity: 0.7; max-width: 500px;">আটঘরিয়া, পাবনার সবচেয়ে সুস্বাদু খাবারের ডিজিটাল মেলা। আজই আপনার পছন্দের খাবার অর্ডার করুন।</p>
-    <button class="btn btn-primary" style="width: 220px;" onclick="showPage('menu')">মেনু দেখুন</button>
+<section id="home" class="active">
+    <div style="text-align: center; margin-top: 100px;">
+        <h1 style="font-size: 3rem;">SFRestaurants</h1>
+        <p style="margin: 20px 0; opacity: 0.8;">The Best Food In Atgharia, Pabna. Quality You Can Taste.</p>
+        <button class="btn btn-primary" style="width: 220px;" onclick="showPage('menu')">Order Now</button>
+    </div>
 </section>
 
 <section id="login">
-    <div class="auth-card">
-        <h2>লগইন করুন</h2>
-        <input type="tel" id="loginPhone" placeholder="ফোন নম্বর (যেমন: 017...)">
-        <input type="password" id="loginPass" placeholder="পাসওয়ার্ড">
-        <button class="btn btn-primary" onclick="handleLogin()">Login</button>
-        <p style="text-align:center; margin-top:20px; font-size:0.9rem;">অ্যাকাউন্ট নেই? <a onclick="showPage('signup')" style="color:var(--primary); cursor:pointer; font-weight:bold;">সাইন-আপ করুন</a></p>
+    <div class="container">
+        <h2 style="text-align:center; margin-bottom: 20px;">Welcome Back</h2>
+        <input type="email" id="lEmail" placeholder="Email Address">
+        <input type="password" id="lPass" placeholder="Password">
+        <button class="btn btn-primary" onclick="login()">Sign In</button>
+        <p style="text-align:center; margin-top:20px; font-size: 0.9rem;">New User? <a onclick="showPage('signup')" style="color:var(--primary); cursor:pointer; font-weight: bold;">Create Account</a></p>
     </div>
 </section>
 
 <section id="signup">
-    <div class="auth-card">
-        <h2>নতুন অ্যাকাউন্ট</h2>
-        <input type="text" id="regName" placeholder="আপনার নাম">
-        <input type="tel" id="regPhone" placeholder="ফোন নম্বর">
-        <input type="password" id="regPass" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)">
-        <button class="btn btn-primary" onclick="handleSignup()">Register</button>
-        <p style="text-align:center; margin-top:20px; font-size:0.9rem;">আগে থেকেই অ্যাকাউন্ট আছে? <a onclick="showPage('login')" style="color:var(--primary); cursor:pointer; font-weight:bold;">লগইন করুন</a></p>
+    <div class="container">
+        <h2 style="text-align:center; margin-bottom: 20px;">Join Us</h2>
+        <input type="text" id="sName" placeholder="Your Full Name">
+        <input type="email" id="sEmail" placeholder="Email Address">
+        <input type="tel" id="sPhone" placeholder="Mobile Number">
+        <input type="password" id="sPass" placeholder="Password (Min. 6 characters)">
+        <button class="btn btn-primary" onclick="signup()">Register Now</button>
     </div>
 </section>
 
 <section id="menu">
-    <h2 style="text-align: center; color: var(--primary);">Popular Dishes</h2>
-    <div class="menu-grid" id="menu-display"></div>
+    <h2 style="text-align:center; margin-bottom: 30px;">Our Specials</h2>
+    <div class="menu-grid" id="menu-container"></div>
 </section>
 
 <section id="admin">
-    <h2 style="text-align: center;">Admin Panel</h2>
-    <div class="auth-card" style="max-width: 600px;">
-        <h3>Add New Item</h3>
-        <input type="text" id="fName" placeholder="খাবারের নাম">
-        <input type="number" id="fPrice" placeholder="দাম (৳)">
-        <input type="text" id="fImg" placeholder="ছবির লিঙ্ক (URL)">
-        <button class="btn btn-primary" onclick="uploadFood()">Add Product</button>
+    <div class="container">
+        <h3>Dashboard: Add New Food</h3>
+        <input type="text" id="fName" placeholder="Food Name">
+        <input type="number" id="fPrice" placeholder="Price (৳)">
+        <input type="text" id="fImg" placeholder="Image URL (Link)">
+        <button class="btn btn-primary" onclick="addFood()">Add to Menu</button>
     </div>
-    <div id="admin-orders" style="margin-top: 30px;"></div>
+    <div style="margin-top: 50px;">
+        <h3 style="text-align: center; margin-bottom: 20px;">Customer Order Records</h3>
+        <div id="admin-orders"></div>
+    </div>
+</section>
+
+<section id="contact">
+    <div class="container" style="max-width: 600px; text-align: center;">
+        <h2 style="margin-bottom: 20px;">Get In Touch</h2>
+        <p><i class="fas fa-phone-alt"></i> 01310289829</p>
+        <p><i class="fas fa-envelope"></i> shareasobuj9829@gmail.com</p>
+        <p><i class="fas fa-map-marker-alt"></i> আটঘরিয়া, পাবনা, বাংলাদেশ</p>
+    </div>
 </section>
 
 <footer>
     <p>© 2026 SFRestaurants | Atgharia, Pabna</p>
-    <p style="font-size: 0.8rem; opacity: 0.5;">Contact: 01310289829 | shareasobuj9829@gmail.com</p>
 </footer>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+<script>
+    // --- Firebase Configuration ---
     const firebaseConfig = {
         apiKey: "AIzaSyAxGlwu5sUsS2tTaQPjWLGshqU_6oKfulc",
   authDomain: "sfrestaurants-21981.firebaseapp.com",
@@ -153,115 +146,137 @@
   measurementId: "G-21VRSXM2X1"
 };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    window.toggleMenu = () => document.getElementById('navLinks').classList.toggle('show');
-    window.showPage = (id) => {
+    // Navigation
+    function showPage(id) {
         document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.getElementById('navLinks').classList.remove('show');
         window.scrollTo(0,0);
-    };
+    }
+    function toggleMenu() { document.getElementById('navLinks').classList.toggle('show'); }
 
-    const phoneToEmail = (phone) => `${phone.trim()}@sfr.com`;
+    // Signup Logic
+    async function signup() {
+        const name = document.getElementById('sName').value;
+        const email = document.getElementById('sEmail').value;
+        const phone = document.getElementById('sPhone').value;
+        const pass = document.getElementById('sPass').value;
 
-    // signup logic
-    window.handleSignup = async () => {
-        const name = document.getElementById('regName').value;
-        const phone = document.getElementById('regPhone').value;
-        const pass = document.getElementById('regPass').value;
-
-        if(!name || phone.length < 11 || pass.length < 6) return alert("সব তথ্য সঠিক দিন (পাসওয়ার্ড কমপক্ষে ৬ অক্ষর)");
+        if(!email || pass.length < 6 || !phone) return alert("Please fill all fields correctly.");
 
         try {
-            const res = await createUserWithEmailAndPassword(auth, phoneToEmail(phone), pass);
-            await setDoc(doc(db, "users", res.user.uid), { name, phone });
-            alert("অ্যাকাউন্ট তৈরি হয়েছে! এখন লগইন করুন।");
-            showPage('login');
-        } catch (e) { alert("ত্রুটি: অ্যাকাউন্ট আগে থেকেই থাকতে পারে।"); }
-    };
-
-    // login logic
-    window.handleLogin = async () => {
-        const phone = document.getElementById('loginPhone').value;
-        const pass = document.getElementById('loginPass').value;
-        try {
-            await signInWithEmailAndPassword(auth, phoneToEmail(phone), pass);
-            alert("লগইন সফল!");
+            const userCredential = await auth.createUserWithEmailAndPassword(email, pass);
+            await db.collection("users").doc(userCredential.user.uid).set({ name, email, phone });
+            alert("Signup Successful! Welcome to SFRestaurants.");
             showPage('home');
-        } catch (e) { alert("নম্বর বা পাসওয়ার্ড ভুল!"); }
-    };
+        } catch (error) { alert("Signup Error: " + error.message); }
+    }
 
-    window.logout = () => signOut(auth).then(() => location.reload());
+    // Login Logic
+    async function login() {
+        const email = document.getElementById('lEmail').value;
+        const pass = document.getElementById('lPass').value;
+        try {
+            await auth.signInWithEmailAndPassword(email, pass);
+            alert("Login Successful!");
+            showPage('home');
+        } catch (error) { alert("Login Error: Please check email and password."); }
+    }
 
-    // auth state
-    onAuthStateChanged(auth, async (user) => {
+    function handleLogout() { auth.signOut().then(() => location.reload()); }
+
+    // Admin Access Management (ইউজার ইমেইল দিয়ে চেক হবে)
+    const ADMIN_EMAIL = "shareasobuj9829@gmail.com"; 
+
+    auth.onAuthStateChanged(user => {
         if(user) {
-            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('loginLink').style.display = 'none';
             document.getElementById('logoutBtn').style.display = 'block';
-            if(user.email === "01310289829@sfr.com") document.getElementById('adminBtn').style.display = 'block';
+            if(user.email === ADMIN_EMAIL) {
+                document.getElementById('adminBtn').style.display = 'block';
+                loadOrders();
+            }
+        } else {
+            document.getElementById('loginLink').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('adminBtn').style.display = 'none';
         }
+        loadMenu();
     });
 
-    // product management
-    window.uploadFood = async () => {
+    // Menu Logic
+    async function addFood() {
         const name = document.getElementById('fName').value;
         const price = document.getElementById('fPrice').value;
         const img = document.getElementById('fImg').value;
-        if(!name || !price) return alert("নাম এবং দাম দিন");
-        await addDoc(collection(db, "menu"), { name, price, img, time: new Date() });
-        alert("খাবার যোগ হয়েছে!");
-    };
+        if(!name || !price) return alert("Please enter food name and price.");
+        await db.collection("menu").add({ name, price, img, date: new Date() });
+        alert("New Food Added!");
+    }
 
-    onSnapshot(query(collection(db, "menu"), orderBy("time", "desc")), (snap) => {
-        const display = document.getElementById('menu-display');
-        display.innerHTML = "";
-        snap.forEach(doc => {
-            const d = doc.data();
-            display.innerHTML += `
-                <div class="product-card">
-                    <img src="${d.img || 'https://via.placeholder.com/300'}">
-                    <div class="product-info">
-                        <h3>${d.name}</h3>
-                        <p style="color:var(--primary); font-weight:700; font-size: 1.2rem;">৳ ${d.price}</p>
-                        <button class="btn btn-primary" onclick="confirmOrder('${d.name}', ${d.price})">অর্ডার দিন</button>
-                    </div>
-                </div>`;
+    function loadMenu() {
+        db.collection("menu").orderBy("date", "desc").onSnapshot(snap => {
+            const container = document.getElementById('menu-container');
+            container.innerHTML = "";
+            snap.forEach(doc => {
+                const item = doc.data();
+                container.innerHTML += `
+                    <div class="food-card">
+                        <img src="${item.img || 'https://via.placeholder.com/300'}" alt="${item.name}">
+                        <div class="card-body">
+                            <h3>${item.name}</h3>
+                            <p style="color:var(--primary); font-weight:700; font-size: 1.2rem;">৳ ${item.price}</p>
+                            <button class="btn btn-primary" onclick="placeOrder('${item.name}', '${item.price}')">অর্ডার দিন</button>
+                        </div>
+                    </div>`;
+            });
         });
-    });
+    }
 
-    window.confirmOrder = async (food, price) => {
-        if(!auth.currentUser) return showPage('login');
-        const addr = prompt("ডেলিভারি ঠিকানা দিন:");
-        if(!addr) return;
-        
-        const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+    // Ordering Logic
+    async function placeOrder(name, price) {
+        if(!auth.currentUser) {
+            alert("Please Login First to order food!");
+            showPage('login');
+            return;
+        }
+        const address = prompt("আপনার ডেলিভারি ঠিকানা লিখুন:");
+        if(!address) return;
+
+        const userDoc = await db.collection("users").doc(auth.currentUser.uid).get();
         const userData = userDoc.data();
-        
-        await addDoc(collection(db, "orders"), {
-            customer: userData.name,
-            phone: userData.phone,
-            address: addr,
-            food, price, time: new Date()
-        });
-        alert("অর্ডার সফল হয়েছে! আপনার সাথে যোগাযোগ করা হবে।");
-    };
 
-    // Admin Orders View
-    onSnapshot(query(collection(db, "orders"), orderBy("time", "desc")), (snap) => {
-        const list = document.getElementById('admin-orders');
-        list.innerHTML = "<h3>Customer Orders</h3>";
-        snap.forEach(d => {
-            const o = d.data();
-            list.innerHTML += `<div class="auth-card" style="margin-bottom:15px; max-width: 100%; text-align: left; padding: 15px;">
-                <p><b>আইটেম:</b> ${o.food} (৳${o.price})</p>
-                <p><b>কাস্টমার:</b> ${o.customer} | ${o.phone}</p>
-                <p><b>ঠিকানা:</b> ${o.address}</p>
-            </div>`;
+        await db.collection("orders").add({
+            food: name, price: price,
+            customerName: userData.name, 
+            customerPhone: userData.phone,
+            customerEmail: userData.email,
+            deliveryAddress: address,
+            orderTime: new Date()
         });
-    });
+        alert("অর্ডার সফল! আপনার ঠিকানায় খাবার পৌঁছে যাবে।");
+    }
+
+    // Admin Order Loading
+    function loadOrders() {
+        db.collection("orders").orderBy("orderTime", "desc").onSnapshot(snap => {
+            const container = document.getElementById('admin-orders');
+            container.innerHTML = "";
+            snap.forEach(doc => {
+                const o = doc.data();
+                container.innerHTML += `
+                    <div class="container" style="max-width:100%; font-size:0.9rem; text-align: left; margin-bottom: 10px; border-left: 4px solid var(--primary);">
+                        <b>Item:</b> ${o.food} (৳${o.price})<br>
+                        <b>Name:</b> ${o.customerName} | <b>Phone:</b> ${o.customerPhone}<br>
+                        <b>Address:</b> ${o.deliveryAddress}
+                    </div>`;
+            });
+        });
+    }
 </script>
 </body>
-    </html>
+</html>
