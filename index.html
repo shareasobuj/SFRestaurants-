@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SFRestaurants | Fully Responsive</title>
+    <title>SFRestaurants | Atgharia, Pabna</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -17,50 +17,33 @@
             padding: 15px 5%; background:rgba(15,23,42,0.98); 
             position:fixed; width:100%; top:0; z-index:1000; border-bottom: 1px solid var(--glass); 
         }
-        .logo { font-size:1.4rem; font-weight:700; color:var(--primary); }
-
+        .logo { font-size:1.4rem; font-weight:700; color:var(--primary); cursor: pointer; }
         .nav-links { display:flex; gap:15px; align-items:center; }
-        .nav-links a { color:white; text-decoration:none; font-size: 0.9rem; font-weight: 500; cursor:pointer; }
-        
-        .menu-icon { display: none; font-size: 1.5rem; cursor: pointer; color: white; }
+        .nav-links a { color:white; text-decoration:none; font-size: 0.9rem; cursor:pointer; transition: 0.3s; }
+        .menu-icon { display: none; font-size: 1.5rem; cursor: pointer; }
 
-        /* Hero Section */
-        .hero {
-            height: 90vh; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; text-align: center;
-            padding: 0 10%; background: linear-gradient(rgba(15,23,42,0.8), rgba(15,23,42,0.8)), 
-            url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1000&q=80');
-            background-size: cover; background-position: center;
-        }
-        .hero h1 { font-size: 2.8rem; line-height: 1.2; margin-bottom: 15px; }
-
-        /* General Section Responsive */
+        /* General Section Layout */
         section { padding: 100px 5% 40px; display:none; min-height: 100vh; }
         section.active { display:block; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
 
-        /* Responsive Grid for Food */
-        .menu-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-            gap: 20px; margin-top: 30px; 
+        .container { 
+            width: 100%; max-width: 450px; margin: 20px auto; 
+            background: var(--glass); padding: 30px; border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
         }
-        .food-card { background: var(--glass); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-        .food-card img { width:100%; height:200px; object-fit:cover; }
-        .card-body { padding: 15px; text-align: center; }
 
-        /* Buttons Responsive */
-        .btn { padding:12px 20px; border:none; border-radius:12px; cursor:pointer; font-weight:600; width: 100%; font-size: 1rem; transition: 0.3s; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 10px; font-size: 1rem; }
+        .btn { width:100%; padding:14px; border:none; border-radius:12px; cursor:pointer; font-weight:600; margin-top:10px; transition: 0.3s; }
         .btn-primary { background: var(--primary); color:white; }
 
-        /* Login/Admin Container Responsive */
-        .container { 
-            width: 100%; max-width: 400px; margin: 20px auto; 
-            background: var(--glass); padding: 25px; border-radius: 20px; 
-        }
-        input { width: 100%; padding: 12px; margin: 8px 0; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 10px; }
+        /* Menu Grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 20px; }
+        .food-card { background: var(--glass); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
+        .food-card img { width: 100%; height: 180px; object-fit: cover; }
+        .card-body { padding: 15px; }
 
-        /* Tablet & Mobile View Adjustment */
+        /* Tablet & Mobile View */
         @media (max-width: 768px) {
             .nav-links { 
                 display: none; position: absolute; top: 65px; left: 0; 
@@ -69,12 +52,9 @@
             }
             .nav-links.show { display: flex; }
             .menu-icon { display: block; }
-            .hero h1 { font-size: 2rem; }
-            .admin-grid { display: block; }
         }
 
-        /* Footer */
-        footer { background: #000; padding: 40px; text-align: center; font-size: 0.9rem; }
+        footer { background: #000; padding: 40px; text-align: center; margin-top: 40px; }
     </style>
 </head>
 <body>
@@ -87,77 +67,70 @@
         <a onclick="showPage('menu')">Menu</a>
         <a onclick="showPage('contact')">Contact</a>
         <a id="adminBtn" onclick="showPage('admin')" style="display:none; color: gold;">Dashboard</a>
-        <a id="loginBtn" onclick="showPage('login')" style="color:var(--primary)">Login</a>
+        <a id="loginBtn" onclick="showPage('login')" style="color:var(--primary); font-weight: bold;">Login</a>
         <a id="logoutBtn" onclick="logout()" style="display:none;">Logout</a>
     </div>
 </nav>
 
 <section id="home" class="active">
-    <div class="hero">
-        <h1 data-aos="fade-down">সুস্বাদু খাবারের <br> নতুন ঠিকানা</h1>
-        <p style="margin-bottom: 25px;">আটঘরিয়া, পাবনার প্রিমিয়াম ডাইনিং এখন অনলাইনে।</p>
+    <div style="text-align: center; padding-top: 80px;">
+        <h1 style="font-size: 2.5rem;">Delicious Food <br> For You</h1>
+        <p style="margin: 20px 0; opacity: 0.8;">আটঘরিয়া, পাবনার সেরা খাবার এখন এক ক্লিকেই।</p>
         <button class="btn btn-primary" style="width: 200px;" onclick="showPage('menu')">মেনু দেখুন</button>
     </div>
 </section>
 
-<section id="menu">
-    <h2 style="text-align: center; margin-bottom: 20px;">আমাদের স্পেশাল মেনু</h2>
-    <div class="menu-grid" id="menu-display">
-        </div>
-</section>
-
 <section id="login">
     <div class="container">
-        <h2 style="text-align: center; margin-bottom: 20px;">ফোন দিয়ে লগইন করুন</h2>
-        <div id="phone-input-step">
-            <input type="tel" id="phoneNumber" placeholder="+8801XXXXXXXXX" value="+880">
-            <div id="recaptcha-container"></div>
-            <button class="btn btn-primary" onclick="sendOTP()">OTP পাঠান</button>
-        </div>
-        <div id="otp-input-step" style="display: none;">
-            <input type="text" id="otpCode" placeholder="৬ সংখ্যার কোড দিন">
-            <button class="btn btn-primary" onclick="verifyOTP()">ভেরিফাই করুন</button>
-        </div>
+        <h2 style="text-align: center; margin-bottom: 20px;">লগইন করুন</h2>
+        <input type="tel" id="loginPhone" placeholder="ফোন নম্বর (017...)">
+        <input type="password" id="loginPass" placeholder="পাসওয়ার্ড">
+        <button class="btn btn-primary" onclick="handleLogin()">লগইন</button>
+        <p style="text-align:center; margin-top:15px; font-size:0.9rem;">অ্যাকাউন্ট নেই? <a onclick="showPage('signup')" style="color:var(--primary); cursor:pointer;">সাইন-আপ করুন</a></p>
     </div>
+</section>
+
+<section id="signup">
+    <div class="container">
+        <h2 style="text-align: center; margin-bottom: 20px;">নতুন অ্যাকাউন্ট</h2>
+        <input type="text" id="regName" placeholder="আপনার নাম">
+        <input type="tel" id="regPhone" placeholder="ফোন নম্বর">
+        <textarea id="regAddress" placeholder="ডেলিভারি ঠিকানা"></textarea>
+        <input type="password" id="regPass" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)">
+        <button class="btn btn-primary" onclick="handleSignup()">অ্যাকাউন্ট তৈরি করুন</button>
+    </div>
+</section>
+
+<section id="menu">
+    <h2 style="text-align: center;">আমাদের মেনু</h2>
+    <div class="menu-grid" id="menu-display"></div>
 </section>
 
 <section id="admin">
-    <h2 style="text-align: center; margin-bottom: 20px;">Admin Dashboard</h2>
     <div class="container">
         <h3>নতুন খাবার যোগ করুন</h3>
         <input type="text" id="fName" placeholder="খাবারের নাম">
-        <input type="number" id="fPrice" placeholder="দাম (৳)">
-        <input type="text" id="fImg" placeholder="ছবির লিঙ্ক (Image URL)">
-        <button class="btn btn-primary" onclick="uploadFood()">আপলোড করুন</button>
+        <input type="number" id="fPrice" placeholder="দাম">
+        <input type="text" id="fImg" placeholder="ছবির লিঙ্ক (URL)">
+        <button class="btn btn-primary" onclick="uploadFood()">আপলোড</button>
     </div>
     <div style="margin-top: 30px;">
         <h3>অর্ডার লিস্ট</h3>
-        <div id="admin-orders" class="menu-grid" style="grid-template-columns: 1fr;"></div>
-    </div>
-</section>
-
-<section id="contact">
-    <div class="container" style="max-width: 600px;">
-        <h2>যোগাযোগ</h2>
-        <p><i class="fas fa-phone"></i> 01310289829</p>
-        <p><i class="fas fa-envelope"></i> shareasobuj9829@gmail.com</p>
-        <p><i class="fas fa-map-marker-alt"></i> আটঘরিয়া, পাবনা</p>
-        <div style="margin-top: 20px; border-radius: 15px; overflow: hidden; height: 250px;">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14555.452332145698!2d89.2443454!3d24.1238456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39fc89f9e7f50221%3A0x673c88085b376c6e!2sAtgharia!5e0!3m2!1sen!2sbd!4v1710000000000" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-        </div>
+        <div id="admin-orders" style="margin-top:15px;"></div>
     </div>
 </section>
 
 <footer>
-    <p>&copy; 2026 SFRestaurants | Atgharia, Pabna</p>
+    <p>SFRestaurants | Atgharia, Pabna</p>
+    <p style="font-size:0.8rem; opacity:0.5;">01310289829 | shareasobuj9829@gmail.com</p>
 </footer>
 
 <script type="module">
-    // --- Firebase Logic (আগের মতোই থাকবে) ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // আপনার ফায়ারবেজ কনফিগারেশন এখানে দিন
     const firebaseConfig = {
         apiKey: "AIzaSyAxGlwu5sUsS2tTaQPjWLGshqU_6oKfulc",
   authDomain: "sfrestaurants-21981.firebaseapp.com",
@@ -172,11 +145,8 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Responsive Toggle Menu
-    window.toggleMenu = () => {
-        document.getElementById('navLinks').classList.toggle('show');
-    };
-
+    // Navigation Logic
+    window.toggleMenu = () => document.getElementById('navLinks').classList.toggle('show');
     window.showPage = (id) => {
         document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
@@ -184,17 +154,99 @@
         window.scrollTo(0,0);
     };
 
-    // Firebase Auth & Database Functions (আগের কোড অনুযায়ী কাজ করবে)
-    // ... (অ্যাডমিন চেক, ওটিপি সেন্ড, ফুড আপলোড এবং অর্ডার ফাংশনগুলো আগের মতো এখানে থাকবে)
-    // উদাহরণস্বরূপ:
-    onAuthStateChanged(auth, (user) => {
+    // Helper: ফোন নম্বরকে ইমেইল ফরম্যাটে রূপান্তর
+    const phoneToEmail = (phone) => `${phone.trim()}@sf.com`;
+
+    // Sign Up
+    window.handleSignup = async () => {
+        const name = document.getElementById('regName').value;
+        const phone = document.getElementById('regPhone').value;
+        const address = document.getElementById('regAddress').value;
+        const pass = document.getElementById('regPass').value;
+
+        if(phone.length < 11) return alert("সঠিক ফোন নম্বর দিন");
+
+        try {
+            const res = await createUserWithEmailAndPassword(auth, phoneToEmail(phone), pass);
+            await setDoc(doc(db, "users", res.user.uid), { name, phone, address });
+            alert("অ্যাকাউন্ট তৈরি হয়েছে!");
+            showPage('home');
+        } catch (e) { alert("ভুল তথ্য অথবা অ্যাকাউন্ট আগে থেকেই আছে।"); }
+    };
+
+    // Login
+    window.handleLogin = async () => {
+        const phone = document.getElementById('loginPhone').value;
+        const pass = document.getElementById('loginPass').value;
+        try {
+            await signInWithEmailAndPassword(auth, phoneToEmail(phone), pass);
+            alert("লগইন সফল!");
+            showPage('home');
+        } catch (e) { alert("নম্বর বা পাসওয়ার্ড ভুল!"); }
+    };
+
+    window.logout = () => signOut(auth).then(() => location.reload());
+
+    // Auth Watcher
+    onAuthStateChanged(auth, async (user) => {
         if(user) {
             document.getElementById('loginBtn').style.display = 'none';
             document.getElementById('logoutBtn').style.display = 'block';
-            if(user.phoneNumber === "+8801310289829") {
-                document.getElementById('adminBtn').style.display = 'block';
-            }
+            if(user.email === "01310289829@sf.com") document.getElementById('adminBtn').style.display = 'block';
         }
+    });
+
+    // Food Management
+    window.uploadFood = async () => {
+        const name = document.getElementById('fName').value;
+        const price = document.getElementById('fPrice').value;
+        const img = document.getElementById('fImg').value;
+        await addDoc(collection(db, "menu"), { name, price, img, time: new Date() });
+        alert("খাবার যোগ হয়েছে!");
+    };
+
+    onSnapshot(query(collection(db, "menu"), orderBy("time", "desc")), (snap) => {
+        const display = document.getElementById('menu-display');
+        display.innerHTML = "";
+        snap.forEach(doc => {
+            const d = doc.data();
+            display.innerHTML += `
+                <div class="food-card">
+                    <img src="${d.img || 'https://via.placeholder.com/300'}">
+                    <div class="card-body">
+                        <h3>${d.name}</h3>
+                        <p style="color:var(--primary); font-weight:bold;">৳ ${d.price}</p>
+                        <button class="btn btn-primary" onclick="orderNow('${d.name}', ${d.price})">অর্ডার</button>
+                    </div>
+                </div>`;
+        });
+    });
+
+    window.orderNow = async (food, price) => {
+        if(!auth.currentUser) return showPage('login');
+        const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+        const userData = userDoc.data();
+        
+        await addDoc(collection(db, "orders"), {
+            customer: userData.name,
+            phone: userData.phone,
+            address: userData.address,
+            food, price, time: new Date()
+        });
+        alert("অর্ডার সফল হয়েছে!");
+    };
+
+    // Admin Orders
+    onSnapshot(query(collection(db, "orders"), orderBy("time", "desc")), (snap) => {
+        const list = document.getElementById('admin-orders');
+        list.innerHTML = "";
+        snap.forEach(d => {
+            const o = d.data();
+            list.innerHTML += `<div class="container" style="margin-bottom:10px; font-size:0.9rem;">
+                <b>${o.food}</b> - ৳${o.price}<br>
+                নাম: ${o.customer} | ফোন: ${o.phone}<br>ঠিকানা: ${o.address}
+            </div>`;
+        });
     });
 </script>
 </body>
