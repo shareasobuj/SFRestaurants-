@@ -3,109 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SFRestaurants | Premium Food Service</title>
+    <title>SFRestaurants | Phone Login & Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ff4757; --dark: #0f172a; --glass: rgba(255,255,255,0.05); }
-        body { background: var(--dark); color: white; font-family: 'Poppins', sans-serif; margin: 0; }
-        
-        /* Navbar */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 8%; background: rgba(15,23,42,0.95); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--glass); }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
-        .nav-links a { color: white; text-decoration: none; margin-left: 20px; cursor: pointer; }
+        :root { --primary: #ff4757; --dark: #0f172a; --glass: rgba(255,255,255,0.08); }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+        body { background: var(--dark); color: white; overflow-x: hidden; }
 
-        /* Auth/Admin/Menu Sections */
-        section { padding: 40px 8%; display: none; }
-        section.active { display: block; }
+        /* Navigation */
+        nav { display:flex; justify-content:space-between; align-items:center; padding:15px 8%; background:rgba(15,23,42,0.95); position:fixed; width:100%; top:0; z-index:1000; border-bottom:1px solid var(--glass); }
+        .logo { font-size:1.6rem; font-weight:700; color:var(--primary); cursor:pointer; }
+        .nav-links { display:flex; gap:20px; align-items:center; }
+        .nav-links a { color:white; text-decoration:none; cursor:pointer; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Responsive Layout */
+        section { padding: 100px 8% 40px; display:none; min-height: 100vh; }
+        section.active { display:block; }
+
+        .container { max-width:450px; margin: 20px auto; background:var(--glass); padding:30px; border-radius:20px; backdrop-filter:blur(10px); border: 1px solid rgba(255,255,255,0.1); }
         
-        .container { max-width: 500px; margin: auto; background: var(--glass); padding: 30px; border-radius: 15px; border: 1px solid var(--primary); }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #1e293b; border: 1px solid #334155; color: white; border-radius: 8px; }
+        /* Forms */
+        input, textarea { width:100%; padding:12px; margin:10px 0; background:#1e293b; border:1px solid #334155; color:white; border-radius:10px; font-size: 1rem; }
+        .btn { width:100%; padding:14px; border:none; border-radius:10px; cursor:pointer; font-weight:600; transition:0.3s; margin-top:10px; font-size: 1rem; }
+        .btn-primary { background: var(--primary); color:white; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* Menu Grid */
+        .menu-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:25px; margin-top:30px; }
+        .food-card { background:var(--glass); border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.05); }
+        .food-card img { width:100%; height:200px; object-fit:cover; }
+        .card-body { padding:20px; text-align:center; }
+
+        /* Admin Dashboard */
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { 
+            .admin-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; } /* Mobile menu can be added later */
+        }
         
-        /* Product Grid */
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .food-card { background: var(--glass); border-radius: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); text-align: center; }
-        .food-card img { width: 100%; height: 200px; object-fit: cover; }
-        .btn { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%; }
-        
-        /* Footer */
-        footer { text-align: center; padding: 40px; background: #000; margin-top: 50px; }
+        #recaptcha-container { margin: 10px 0; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">SFRESTAURANTS</div>
+    <div class="logo" onclick="showPage('home')">SFRESTAURANTS</div>
     <div class="nav-links">
         <a onclick="showPage('home')">Home</a>
         <a onclick="showPage('menu')">Menu</a>
-        <a id="adminLink" onclick="showPage('admin')" style="display:none">Admin</a>
-        <a id="authBtn" onclick="showPage('login')">Login</a>
-        <a id="logoutBtn" onclick="handleLogout()" style="display:none">Logout</a>
+        <a onclick="showPage('contact')">Contact</a>
+        <a id="adminBtn" onclick="showPage('admin')" style="display:none; color: gold;">Dashboard</a>
+        <a id="loginBtn" onclick="showPage('login')" class="btn-primary" style="padding: 8px 20px; border-radius: 20px;">Login</a>
+        <a id="logoutBtn" onclick="logout()" style="display:none;">Logout</a>
     </div>
 </nav>
 
-<section id="home" class="active">
-    <div style="text-align: center; padding: 100px 0;">
-        <h1>Taste the Best in Atgharia</h1>
-        <p>আমরা আছি আপনার সেবায়। অর্ডার করুন সেরা খাবার।</p>
-        <button class="btn" style="width: 200px;" onclick="showPage('menu')">Explore Menu</button>
-    </div>
+<section id="home" class="active" style="text-align: center; padding-top: 150px;">
+    <h1 style="font-size: 3rem;">Premium Food Experience</h1>
+    <p style="opacity: 0.7; margin: 20px 0;">আটঘরিয়া, পাবনার সেরা রেস্টুরেন্ট এখন আপনার মোবাইলে।</p>
+    <button class="btn btn-primary" style="width: 200px;" onclick="showPage('menu')">অর্ডার করুন</button>
 </section>
 
 <section id="menu">
-    <h2 style="text-align: center;">Today's Specials</h2>
-    <div class="menu-grid" id="menuDisplay"></div>
+    <h2 style="text-align: center;">Our Specialties</h2>
+    <div class="menu-grid" id="menu-display"></div>
 </section>
 
 <section id="login">
     <div class="container">
-        <h2>Login</h2>
-        <input type="email" id="loginEmail" placeholder="Email">
-        <input type="password" id="loginPass" placeholder="Password">
-        <button class="btn" onclick="handleLogin()">Login</button>
-        <p onclick="showPage('signup')" style="cursor:pointer; margin-top:10px;">New user? Sign up here.</p>
-    </div>
-</section>
-
-<section id="signup">
-    <div class="container">
-        <h2>Register</h2>
-        <input type="text" id="userName" placeholder="Full Name">
-        <input type="email" id="userEmail" placeholder="Email">
-        <input type="text" id="userPhone" placeholder="Phone">
-        <textarea id="userAddress" placeholder="Full Delivery Address"></textarea>
-        <input type="password" id="userPass" placeholder="Password">
-        <button class="btn" onclick="handleSignup()">Sign Up</button>
+        <h2 style="text-align: center; margin-bottom: 20px;">Login with Phone</h2>
+        <div id="phone-input-step">
+            <input type="tel" id="phoneNumber" placeholder="+8801XXXXXXXXX" value="+880">
+            <div id="recaptcha-container"></div>
+            <button class="btn btn-primary" onclick="sendOTP()">Send OTP</button>
+        </div>
+        <div id="otp-input-step" style="display: none;">
+            <input type="text" id="otpCode" placeholder="Enter 6-digit OTP">
+            <button class="btn btn-primary" onclick="verifyOTP()">Verify & Login</button>
+        </div>
     </div>
 </section>
 
 <section id="admin">
-    <div class="container">
-        <h2>Admin Panel</h2>
-        <input type="text" id="itemName" placeholder="Food Name">
-        <input type="number" id="itemPrice" placeholder="Price (৳)">
-        <input type="text" id="itemImg" placeholder="Image URL (Firebase Storage Link)">
-        <button class="btn" onclick="addFoodItem()">Add to Menu</button>
-    </div>
-    <div style="margin-top: 50px;">
-        <h3>Recent Orders</h3>
-        <div id="orderList"></div>
+    <div class="admin-grid">
+        <div class="container" style="margin: 0;">
+            <h3>Add New Food</h3>
+            <input type="text" id="fName" placeholder="খাবারের নাম">
+            <input type="number" id="fPrice" placeholder="দাম (৳)">
+            <input type="text" id="fImg" placeholder="Image URL">
+            <button class="btn btn-primary" onclick="uploadFood()">Upload</button>
+        </div>
+        <div class="container" style="margin: 0; max-width: 100%;">
+            <h3>Orders List</h3>
+            <div id="admin-orders" style="font-size: 0.9rem;"></div>
+        </div>
     </div>
 </section>
 
 <footer>
-    <p>© 2026 SFRestaurants | Atgharia, Pabna</p>
-    <p>01310289829 | shareasobuj9829@gmail.com</p>
+    <p>SFRestaurants | Atgharia, Pabna</p>
+    <p style="font-size: 0.8rem; opacity: 0.5;">Contact: 01310289829 | shareasobuj9829@gmail.com</p>
 </footer>
 
 <script type="module">
-    // Firebase অ্যাপ ইম্পোর্ট করুন
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // আপনার ফায়ারবেজ কনফিগ এখানে বসান
+    // আপনার ফায়ারবেজ কনফিগারেশন এখানে বসান
     const firebaseConfig = {
         apiKey: "AIzaSyAxGlwu5sUsS2tTaQPjWLGshqU_6oKfulc",
   authDomain: "sfrestaurants-21981.firebaseapp.com",
@@ -120,82 +127,100 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Page Switching Logic
+    // Global Functions
     window.showPage = (id) => {
         document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     };
 
-    // Authentication Logic
-    window.handleSignup = async () => {
-        const email = document.getElementById('userEmail').value;
-        const pass = document.getElementById('userPass').value;
-        try {
-            const res = await createUserWithEmailAndPassword(auth, email, pass);
-            await addDoc(collection(db, "users"), {
-                uid: res.user.uid,
-                name: document.getElementById('userName').value,
-                phone: document.getElementById('userPhone').value,
-                address: document.getElementById('userAddress').value
-            });
-            alert("Success!");
-            showPage('home');
-        } catch (e) { alert(e.message); }
+    // Phone Auth Logic
+    window.sendOTP = function() {
+        const phone = document.getElementById('phoneNumber').value;
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {});
+        
+        signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
+            .then((confirmationResult) => {
+                window.confirmationResult = confirmationResult;
+                document.getElementById('phone-input-step').style.display = 'none';
+                document.getElementById('otp-input-step').style.display = 'block';
+                alert("OTP Sent!");
+            }).catch((error) => alert(error.message));
     };
 
-    window.handleLogin = async () => {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPass').value;
-        try {
-            await signInWithEmailAndPassword(auth, email, pass);
-            alert("Login Successful!");
+    window.verifyOTP = function() {
+        const code = document.getElementById('otpCode').value;
+        confirmationResult.confirm(code).then(() => {
+            alert("Login Success!");
             showPage('home');
-        } catch (e) { alert("Wrong Credentials!"); }
+        }).catch(() => alert("Invalid OTP!"));
     };
 
-    window.handleLogout = () => signOut(auth);
+    window.logout = () => signOut(auth).then(() => location.reload());
 
-    // UI Updates based on Auth
+    // UI Auth Sync
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            document.getElementById('authBtn').style.display = 'none';
-            document.getElementById('logoutBtn').style.display = 'inline';
-            if(user.email === "shareasobuj9829@gmail.com") { // আপনার ইমেইল দিয়ে এডমিন চেক
-                document.getElementById('adminLink').style.display = 'inline';
+        if(user) {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'block';
+            // Admin Check (আপনার ফোন নম্বর এখানে বসান)
+            if(user.phoneNumber === "+8801310289829") {
+                document.getElementById('adminBtn').style.display = 'block';
             }
-        } else {
-            document.getElementById('authBtn').style.display = 'inline';
-            document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('adminLink').style.display = 'none';
         }
     });
 
-    // Firestore Menu Management
-    window.addFoodItem = async () => {
-        await addDoc(collection(db, "menu"), {
-            name: document.getElementById('itemName').value,
-            price: document.getElementById('itemPrice').value,
-            img: document.getElementById('itemImg').value,
-            createdAt: new Date()
-        });
+    // Firestore: Menu Management
+    window.uploadFood = async () => {
+        const name = document.getElementById('fName').value;
+        const price = document.getElementById('fPrice').value;
+        const img = document.getElementById('fImg').value;
+        await addDoc(collection(db, "menu"), { name, price, img, time: new Date() });
         alert("Food Added!");
     };
 
     // Load Menu Real-time
-    onSnapshot(query(collection(db, "menu"), orderBy("createdAt", "desc")), (snap) => {
-        const display = document.getElementById('menuDisplay');
+    onSnapshot(query(collection(db, "menu"), orderBy("time", "desc")), (snap) => {
+        const display = document.getElementById('menu-display');
         display.innerHTML = "";
         snap.forEach(doc => {
             const data = doc.data();
             display.innerHTML += `
                 <div class="food-card">
-                    <img src="${data.img}">
-                    <div style="padding:15px">
+                    <img src="${data.img || 'https://via.placeholder.com/300'}">
+                    <div class="card-body">
                         <h3>${data.name}</h3>
-                        <p>৳ ${data.price}</p>
-                        <button class="btn" onclick="alert('Order Feature Ready for Integration')">Order via Bkash/Cash</button>
+                        <p style="color:var(--primary); font-weight:bold;">৳ ${data.price}</p>
+                        <button class="btn btn-primary" onclick="orderFood('${data.name}', ${data.price})">অর্ডার দিন</button>
                     </div>
                 </div>`;
+        });
+    });
+
+    window.orderFood = async (name, price) => {
+        if(!auth.currentUser) return showPage('login');
+        const addr = prompt("আপনার ডেলিভারি ঠিকানা দিন:");
+        if(addr) {
+            await addDoc(collection(db, "orders"), {
+                customer: auth.currentUser.phoneNumber,
+                food: name,
+                total: price,
+                address: addr,
+                status: "Pending",
+                time: new Date()
+            });
+            alert("অর্ডার সফল! আমরা শীঘ্রই যোগাযোগ করব।");
+        }
+    };
+
+    // Load Orders for Admin
+    onSnapshot(query(collection(db, "orders"), orderBy("time", "desc")), (snap) => {
+        const list = document.getElementById('admin-orders');
+        list.innerHTML = "";
+        snap.forEach(doc => {
+            const o = doc.data();
+            list.innerHTML += `<div style="padding:10px; border-bottom:1px solid #334155;">
+                <b>${o.food}</b> - ${o.customer}<br>${o.address} <span style="color:var(--primary)">৳${o.total}</span>
+            </div>`;
         });
     });
 
